@@ -136,8 +136,8 @@ html, body {
 .dropzone:focus { outline: none !important; box-shadow: none !important; }
 .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
 .dz-inner { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); text-align: center; }
-.dz-icon { font-size: 24px; line-height: 1; opacity: .7; }
-.dz-text { font-size: 13px; color: var(--text); font-weight: 500; }
+.dz-icon { font-size: 28px; line-height: 1; color: var(--accent); font-weight: 700; }
+.dz-text { font-size: 13px; color: var(--accent); font-weight: 700; }
 .dz-hint { font-size: 11px; }
 
 /* 预览卡片内边距 */
@@ -349,6 +349,7 @@ html, body {
 .seo-wrap { display: flex; flex-direction: column; gap: 40px; }
 
 .seo-block h2 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: .2px;
