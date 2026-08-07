@@ -27,7 +27,6 @@ html, body {
   text-align: center;
   padding: 44px 24px 36px;
   background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-  border-bottom: 1px solid var(--border);
 }
 .hero-inner {
   max-width: 600px;
@@ -44,16 +43,17 @@ html, body {
 .hero-logo:hover { transform: scale(1.04); }
 .hero h1 {
   margin: 0;
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: .5px;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: .3px;
   background: linear-gradient(135deg, #ECEDEF 0%, #b8bcc6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .hero-sub {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   font-size: 14.5px;
   color: var(--muted);
   line-height: 1.65;
@@ -65,7 +65,7 @@ html, body {
 @media (max-width: 640px) {
   .hero { padding: 32px 20px 28px; }
   .hero-logo { width: 200px; margin-bottom: 14px; }
-  .hero h1 { font-size: 24px; }
+  .hero h1 { font-size: 32px; }
   .hero-sub { font-size: 13.5px; }
 }
 
