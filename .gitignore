@@ -1,0 +1,14 @@
+# OS / editor junk
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# local server logs / temp
+*.log
+
+# dependency folders (kept pure-static, but ignore if added later)
+node_modules/
+
+# Cloudflare Pages build cache
+.cf-pages/

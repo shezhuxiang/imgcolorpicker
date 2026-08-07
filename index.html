@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Primary SEO -->
+  <title>Image Color Picker - Extract HEX, RGB &amp; HSL Colors From Any Image</title>
+  <meta name="description" content="Free online image color picker. Upload any image and instantly extract HEX, RGB and HSL color codes. Generate beautiful color palettes for design, development and creative projects." />
+  <meta name="keywords" content="image color picker, extract colors from image, image color extractor, color palette generator, HEX color picker, RGB color picker, HSL color picker" />
+  <meta name="author" content="Image Color Extractor" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://imgcolorpicker.cc/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Image Color Picker - Extract HEX, RGB &amp; HSL Colors From Any Image" />
+  <meta property="og:description" content="Discover the colors inside any image. Extract HEX, RGB and HSL values and generate beautiful color palettes instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://imgcolorpicker.cc/" />
+  <meta property="og:image" content="https://imgcolorpicker.cc/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image Color Picker - Extract HEX, RGB &amp; HSL Colors From Images" />
+  <meta name="twitter:description" content="Upload an image and extract its color palette instantly. Free online color extraction tool." />
+
+  <!-- Structured Data: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image Color Picker",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "Web Browser",
+    "description": "A free online tool to extract HEX, RGB and HSL colors from images.",
+    "url": "https://imgcolorpicker.cc/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Structured Data: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is an image color picker?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An image color picker is an online tool that extracts colors from images and provides HEX, RGB and HSL color values."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I extract colors from an image?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Upload your image and the tool automatically analyzes the image to generate a color palette."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What image formats are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool supports common image formats including JPG and PNG."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this image color picker free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can use the image color picker online for free."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NTF9NJ6C1Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NTF9NJ6C1Z');
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Extract Colors From Any Image</h1>
+    <p class="sub">Upload an image and instantly extract its color palette. Get HEX, RGB and HSL values from any photo, screenshot or design.</p>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <!-- Left column: upload + preview -->
+      <div class="col-left">
+        <!-- Upload card -->
+        <div class="card" id="uploadCard">
+          <div class="card-head"><span class="card-icon">📤</span> Upload Image</div>
+          <div class="card-upload-body">
+            <div id="dropzone" class="dropzone" tabindex="0">
+              <input type="file" id="fileInput" accept="image/*" hidden />
+              <div class="dz-inner">
+                <span class="dz-icon">🖼</span>
+                <span class="dz-text">Choose an image</span>
+                <span class="dz-hint">or drop a file here</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview card (always visible) -->
+        <div class="card" id="previewCard">
+          <div class="card-head"><span class="card-icon">🎨</span> Preview <span class="stage-hint-text" id="stageHintText" hidden>Hover to zoom · Click to pick</span></div>
+          <div class="card-preview-body">
+            <div class="stage" id="stage">
+              <div class="empty-hint" id="emptyHint">No image yet</div>
+              <img id="previewImg" class="preview-img" alt="" hidden />
+              <div class="lens" id="lens" hidden>
+                <span class="lens-hex" id="lensHex"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: palette + sampled -->
+      <div class="col-right">
+        <div class="card card-palette">
+          <div class="card-head"><span class="card-icon">🎨</span> Palette <span class="badge" id="paletteCount" hidden>0</span></div>
+          <div class="palette-list" id="swatches">
+            <div class="palette-empty" id="paletteEmpty">No colors yet</div>
+          </div>
+        </div>
+
+        <div class="card card-sampled" id="sampledCard" hidden>
+          <div class="card-head">
+            <span class="card-icon">📍</span> Picked
+            <span class="badge" id="sampledCount" hidden>0</span>
+            <button type="button" class="head-clear" id="sampledClear" hidden>Clear</button>
+          </div>
+          <div class="palette-list" id="sampledList">
+            <div class="palette-empty" id="sampledEmpty">Click the image to pick colors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ SEO content ============ -->
+  <section class="seo">
+    <div class="seo-wrap">
+
+      <section class="seo-block">
+        <h2>Free Online Image Color Picker</h2>
+        <p>Our free online image color picker helps you extract colors from any image instantly. Upload a photo, screenshot, logo, or design file and discover the dominant colors with accurate HEX, RGB and HSL values. Whether you are a designer, developer, or creator, this tool makes it easy to find and reuse beautiful colors in your projects.</p>
+      </section>
+
+      <section class="seo-block">
+        <h2>How to Extract Colors From an Image</h2>
+        <ol class="steps">
+          <li><strong>Upload your image.</strong> Choose any JPG, PNG or image file.</li>
+          <li><strong>Analyze image colors.</strong> Our color extraction engine detects the main colors from your image.</li>
+          <li><strong>Copy color codes.</strong> Copy HEX, RGB or HSL values and use them in your design projects.</li>
+        </ol>
+      </section>
+
+      <section class="seo-block">
+        <h2>Powerful Image Color Extraction Features</h2>
+        <div class="feature-grid">
+          <div class="feature">
+            <h3>Extract HEX Colors</h3>
+            <p>Get precise HEX color codes from any image.</p>
+          </div>
+          <div class="feature">
+            <h3>RGB and HSL Support</h3>
+            <p>Convert extracted colors into RGB and HSL formats.</p>
+          </div>
+          <div class="feature">
+            <h3>Generate Color Palette</h3>
+            <p>Create beautiful palettes from photos, screenshots and artwork.</p>
+          </div>
+          <div class="feature">
+            <h3>Browser Based</h3>
+            <p>Works directly in your browser without installation.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="seo-block">
+        <h2>Who Can Use This Image Color Picker?</h2>
+        <div class="usecase-grid">
+          <div class="usecase">
+            <h3>Designers</h3>
+            <p>Find inspiration colors from photos, artwork and UI designs.</p>
+          </div>
+          <div class="usecase">
+            <h3>Developers</h3>
+            <p>Extract colors and create CSS variables, themes and design tokens.</p>
+          </div>
+          <div class="usecase">
+            <h3>Brand Designers</h3>
+            <p>Discover brand colors from logos and visual assets.</p>
+          </div>
+          <div class="usecase">
+            <h3>Content Creators</h3>
+            <p>Create consistent color styles for social media and marketing content.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="seo-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq">
+          <details class="faq-item">
+            <summary>What is an image color picker?</summary>
+            <p>An image color picker is an online tool that extracts colors from images and provides HEX, RGB and HSL color values.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How do I extract colors from an image?</summary>
+            <p>Upload your image and the tool automatically analyzes the image to generate a color palette.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What image formats are supported?</summary>
+            <p>The tool supports common image formats including JPG and PNG.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this image color picker free?</summary>
+            <p>Yes, you can use the image color picker online for free.</p>
+          </details>
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span class="footer-brand">Image Color Picker</span>
+      <span class="footer-note">Free online tool to extract HEX, RGB and HSL colors from any image.</span>
+    </div>
+  </footer>
+
+  <script src="extractColor.js"></script>
+  <script src="app.js"></script>
+  <div class="toast" id="toast" hidden></div>
+</body>
+</html>
