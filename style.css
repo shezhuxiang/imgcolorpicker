@@ -349,7 +349,7 @@ html, body {
 .seo-wrap { display: flex; flex-direction: column; gap: 40px; }
 
 .seo-block h2 {
-  font-size: 19px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: .2px;
   margin: 0 0 12px;
