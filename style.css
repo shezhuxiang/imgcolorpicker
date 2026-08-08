@@ -418,7 +418,9 @@ html, body {
 }
 
 @media (max-width: 800px) {
-  .col-right { order: -1; }
+  .grid { grid-template-columns: 1fr; }
+  /* 移动端顺序：上传+预览在前，色板在后 */
+  .col-left { order: -1; }
   .card-palette { min-height: auto; }
 }
 
