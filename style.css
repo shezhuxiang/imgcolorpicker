@@ -13,6 +13,9 @@
 
 * { box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -20,6 +23,85 @@ html, body {
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Top navigation bar ===== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15, 17, 23, .82);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.nav-brand {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-brand span { color: var(--accent); }
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-links li { display: flex; }
+.nav-links a {
+  position: relative;
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color .15s, background .15s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* 锚点偏移：点击菜单或直接带 #hash 跳转时，标题不被 sticky 导航条遮挡 */
+#top { scroll-margin-top: 72px; }
+.seo-block { scroll-margin-top: 72px; }
+
+@media (max-width: 720px) {
+  .nav-inner { height: 52px; padding: 0 16px; gap: 10px; }
+  .nav-brand { font-size: 15px; }
+  .nav-links {
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { padding: 8px 10px; font-size: 13px; }
 }
 
 /* ===== Hero Header (Logo + Title) ===== */

@@ -353,4 +353,41 @@
       done()
     }
   }
+
+  /* ---------------- 顶部导航：平滑滚动 + 滚动高亮 (scrollspy) ---------------- */
+  const navLinks = Array.from(document.querySelectorAll('#navLinks a'))
+  const navMap = {}
+  navLinks.forEach(a => { navMap[a.getAttribute('href').slice(1)] = a })
+
+  const NAV_OFFSET = 72 // 补偿 sticky 导航条高度
+
+  // 点击菜单 → 平滑滚动到对应区块
+  navLinks.forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1)
+      const target = document.getElementById(id)
+      if (!target) return
+      e.preventDefault()
+      const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET
+      window.scrollTo({ top, behavior: 'smooth' })
+      track('nav_click', { section: id })
+    })
+  })
+
+  // 滚动时高亮当前可视区块对应的菜单项
+  const spySections = Object.keys(navMap)
+    .map(id => document.getElementById(id))
+    .filter(Boolean)
+  if ('IntersectionObserver' in window && spySections.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'))
+          const link = navMap[entry.target.id]
+          if (link) link.classList.add('active')
+        }
+      })
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 })
+    spySections.forEach(sec => observer.observe(sec))
+  }
 })()
