@@ -53,6 +53,52 @@
     return n
   }
 
+  /* ---------------- 默认演示图 ----------------
+   * 站点打开时自动加载一张示例图并提取配色，让访客立刻看懂「工具能做什么」。
+   * 显示规则（二选一，通过常量切换）：
+   *   DEMO_EVERY_LOAD = true  → 每次打开网站都显示演示图（最适合「打开即懂」的营销站）
+   *   DEMO_EVERY_LOAD = false → 仅首次访问显示；用过工具后写 localStorage，
+   *                             之后不再自动显示（缓存机制，不骚扰老用户）
+   * 演示图不算「上传」，不会触发 upload_image 事件 / 不计入 session_uploads。
+   */
+  const DEMO_EVERY_LOAD = true
+  const DEMO_IMG = 'demo.jpg'
+  const LS_USED = 'icp_used'
+
+  function markDemoActive(on) {
+    const tag = document.getElementById('sampleTag')
+    if (tag) tag.hidden = !on
+  }
+
+  function showDemoFromUrl(url) {
+    const img = new Image()
+    img.onload = () => {
+      state.imgDataUrl = url
+      processImage(img)
+      markDemoActive(true)
+    }
+    img.onerror = () => { /* 演示图缺失则保持空态 */ }
+    img.src = url
+  }
+
+  function loadDemoImage() {
+    // 优先 fetch + blob（http/https 同源，canvas 不被污染，getImageData 正常）
+    fetch(DEMO_IMG)
+      .then(r => { if (!r.ok) throw new Error('demo not found'); return r.blob() })
+      .then(blob => { showDemoFromUrl(URL.createObjectURL(blob)) })
+      .catch(() => {
+        // file:// 等非 http 环境 fetch 受限 → 退化用 new Image
+        // 注意：file:// 下 canvas 会被跨域污染，getImageData 仍可能被浏览器拦截（Palette 可能为空）
+        console.warn('[demo] fetch 失败，已退化直接加载图片（file:// 环境下可能无法提取颜色，请用本地 HTTP 服务器测试）')
+        showDemoFromUrl(DEMO_IMG)
+      })
+  }
+
+  function maybeLoadDemo() {
+    if (!DEMO_EVERY_LOAD && localStorage.getItem(LS_USED)) return
+    loadDemoImage()
+  }
+
   /* ---------------- 上传 ---------------- */
   function openPicker() { fileInput.click() }
   dropzone.addEventListener('click', openPicker)
@@ -114,40 +160,47 @@
     const img = new Image()
     img.onload = () => {
       state.imgDataUrl = url
-
-      // 采样画布：放大镜用
-      const sMax = 1000
-      const sScale = Math.min(1, sMax / Math.max(img.naturalWidth, img.naturalHeight))
-      const sw = Math.max(1, Math.round(img.naturalWidth * sScale))
-      const sh = Math.max(1, Math.round(img.naturalHeight * sScale))
-      const sc = document.createElement('canvas')
-      sc.width = sw; sc.height = sh
-      const sctx = sc.getContext('2d')
-      sctx.drawImage(img, 0, 0, sw, sh)
-      state.sampleCanvas = sc; state.sampleCtx = sctx; state.sampleW = sw; state.sampleH = sh
-
-      previewImg.src = url
-      enterWorkMode()
-
-      // 提取主色
-      const eMax = 240
-      const eScale = Math.min(1, eMax / Math.max(img.naturalWidth, img.naturalHeight))
-      const ew = Math.max(1, Math.round(img.naturalWidth * eScale))
-      const eh = Math.max(1, Math.round(img.naturalHeight * eScale))
-      const off = document.createElement('canvas')
-      off.width = ew; off.height = eh
-      const octx = off.getContext('2d')
-      octx.drawImage(img, 0, 0, ew, eh)
-      let data
-      try { data = octx.getImageData(0, 0, ew, eh).data } catch (err) { console.error(err); return }
-      const palette = extractPalette(data, ew, eh, { maxColors: 8, edgeWeight: 8 })
-      state.palette = palette
-      renderResults(palette)
+      processImage(img)
       const uploads = bumpSessionUploads()
-      track('upload_image', { file_type: file.type || 'unknown', colors: palette.length, session_uploads: uploads })
+      track('upload_image', { file_type: file.type || 'unknown', colors: state.palette.length, session_uploads: uploads })
+      // 用户已使用自己的图片 → 标记「已用过」，缓存机制下不再自动显示演示图
+      try { localStorage.setItem(LS_USED, '1') } catch (e) {}
+      markDemoActive(false)
     }
     img.onerror = () => alert('Failed to load image')
     img.src = url
+  }
+
+  /* ---------------- 处理已加载的 Image（上传 / 演示图共用） ---------------- */
+  function processImage(img) {
+    // 采样画布：放大镜用
+    const sMax = 1000
+    const sScale = Math.min(1, sMax / Math.max(img.naturalWidth, img.naturalHeight))
+    const sw = Math.max(1, Math.round(img.naturalWidth * sScale))
+    const sh = Math.max(1, Math.round(img.naturalHeight * sScale))
+    const sc = document.createElement('canvas')
+    sc.width = sw; sc.height = sh
+    const sctx = sc.getContext('2d')
+    sctx.drawImage(img, 0, 0, sw, sh)
+    state.sampleCanvas = sc; state.sampleCtx = sctx; state.sampleW = sw; state.sampleH = sh
+
+    previewImg.src = state.imgDataUrl
+    enterWorkMode()
+
+    // 提取主色
+    const eMax = 240
+    const eScale = Math.min(1, eMax / Math.max(img.naturalWidth, img.naturalHeight))
+    const ew = Math.max(1, Math.round(img.naturalWidth * eScale))
+    const eh = Math.max(1, Math.round(img.naturalHeight * eScale))
+    const off = document.createElement('canvas')
+    off.width = ew; off.height = eh
+    const octx = off.getContext('2d')
+    octx.drawImage(img, 0, 0, ew, eh)
+    let data
+    try { data = octx.getImageData(0, 0, ew, eh).data } catch (err) { console.error(err); return }
+    const palette = extractPalette(data, ew, eh, { maxColors: 8, edgeWeight: 8 })
+    state.palette = palette
+    renderResults(palette)
   }
 
   /* ---------------- 渲染结果（A）：右列色板列表 ---------------- */
@@ -390,4 +443,7 @@
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 })
     spySections.forEach(sec => observer.observe(sec))
   }
+
+  // 首屏：按规则自动加载演示图（让访客打开即懂工具能做什么）
+  maybeLoadDemo()
 })()

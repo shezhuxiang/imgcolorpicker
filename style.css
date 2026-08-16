@@ -111,13 +111,13 @@ html, body {
   background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
 }
 .hero-inner {
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
 }
 .hero-logo {
   width: 260px;
   height: auto;
-  margin: 0 auto 18px;
+  margin: 0 auto 14px;
   display: block;
   filter: drop-shadow(0 4px 24px rgba(178,87,68,0.18));
   transition: transform .3s ease;
@@ -138,10 +138,7 @@ html, body {
   margin: 14px 0 0;
   font-size: 14.5px;
   color: var(--muted);
-  line-height: 1.65;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  line-height: 1.6;
 }
 
 @media (max-width: 640px) {
@@ -219,7 +216,7 @@ html, body {
 .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
 .dz-inner { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); text-align: center; }
 .dz-icon { font-size: 20px; line-height: 1; color: var(--accent); font-weight: 700; vertical-align: -3px; margin-right: 2px; }
-.dz-text { font-size: 13px; color: var(--accent); font-weight: 700; }
+.dz-text { font-size: 18px; color: var(--accent); font-weight: 700; }
 .dz-privacy {
   margin: 14px 0 0;
   font-size: 11.5px;
@@ -260,6 +257,20 @@ html, body {
   margin-left: auto;
 }
 .stage-hint-text[hidden] { display: none; }
+
+/* 演示图角标 */
+.sample-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 9px;
+  margin-left: 8px;
+}
+.sample-tag[hidden] { display: none; }
 
 .lens {
   position: absolute;
